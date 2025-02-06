@@ -187,6 +187,9 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
+vim.keymap.set('v', '>', '>gv', { desc = 'Keep selection after indent' })
+vim.keymap.set('v', '<', '<gv', { desc = 'Keep selection after unindent' })
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -351,7 +354,17 @@ require('lazy').setup {
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            hidden = true,
+          },
+          live_grep = {
+            additional_args = { '--hidden' },
+          },
+          grep_string = {
+            additional_args = { '--hidden' },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -408,6 +421,7 @@ require('lazy').setup {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
+      'saghen/blink.cmp',
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -443,6 +457,7 @@ require('lazy').setup {
       --    That is to say, every time a new file is opened that is associated with
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
@@ -543,10 +558,12 @@ require('lazy').setup {
               staticcheck = true,
               usePlaceholders = true,
             },
+            capabilities = capabilities,
           },
         },
         intelephense = {
           filetypes = { 'php' },
+          capabilities = capabilities,
         },
         -- pyright = {},
         -- rust_analyzer = {},
@@ -563,6 +580,7 @@ require('lazy').setup {
           -- cmd = {...},
           -- filetypes { ...},
           -- capabilities = {},
+          capabilities = capabilities,
           settings = {
             Lua = {
               runtime = { version = 'LuaJIT' },
