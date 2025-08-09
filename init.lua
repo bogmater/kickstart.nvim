@@ -144,6 +144,8 @@ vim.opt.splitbelow = true
 vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 
+vim.opt.swapfile = false
+
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
